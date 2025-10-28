@@ -42,24 +42,27 @@ struct DetailContainerView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
-
-
 struct DetailView: View {
     let item: ImageItem
 
     var body: some View {
         GeometryReader { geo in
-            AsyncCachedImage(
-                url: URL(string: item.download_url + "?w=1200"),
-                placeholder: ProgressView()
-            )
-            .scaledToFit()
-            .frame(width: geo.size.width, height: geo.size.height)
-            .clipped()
-            .background(Color.black.opacity(0.95))
-            .transition(.opacity.animation(.easeInOut))
+            ZStack {
+                // 1️⃣ Background color filling the safe area
+                Color(.systemBackground) // or any custom color (e.g., .black, .purple, .gray.opacity(0.9))
+                    .ignoresSafeArea()
+
+                // 2️⃣ Image content
+                AsyncCachedImage(
+                    url: URL(string: item.download_url + "?w=1200"),
+                    placeholder: ProgressView()
+                )
+                .scaledToFit()
+                .frame(width: geo.size.width, height: geo.size.height)
+                .clipped()
+                .transition(.opacity.animation(.easeInOut))
+            }
         }
-        .ignoresSafeArea()
     }
 }
 
@@ -71,10 +74,10 @@ struct DetailInfoBar: View {
         VStack(alignment: .leading, spacing: 6) {
             Text(item.author)
                 .font(.headline)
-                .foregroundColor(.white)
+                .foregroundColor(.black)
             Text("Size: \(item.width) x \(item.height)")
                 .font(.caption)
-                .foregroundColor(.white.opacity(0.8))
+                .foregroundColor(.black.opacity(0.8))
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
